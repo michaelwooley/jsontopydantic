@@ -17,8 +17,6 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "css-build": "node-sass --omit-source-map-url src/style/style.scss src/style/style.css",
-    "dev:style": "npm run css-build -- --watch",
     "dev": "run-p dev:*"
   },
   "eslintConfig": {
@@ -71,7 +69,6 @@
     "bulma": "^0.9.4",
     "bulmaswatch": "^0.8.1",
     "eslint": "^8.0.0",
-    "node-sass": "^7.0.3",
     "npm-run-all": "^4.1.5",
     "prop-types": "^15.8.1",
     "sass": "^1.55.0",

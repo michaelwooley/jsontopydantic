@@ -2,14 +2,9 @@
 
 ## About The Project
 
-[JSON to Pydantic](https://jsontopydantic.com) is a tool that lets you convert JSON objects into
-Pydantic models. [JSON](https://www.json.org/json-en.html)
-is the de-facto data interchange format of the internet, and
-[Pydantic](https://pydantic-docs.helpmanual.io/)
-is a library that makes parsing JSON in Python a breeze.
+[JSON to Pydantic](https://jsontopydantic.com) is a tool that lets you convert JSON objects into Pydantic models. [JSON](https://www.json.org/json-en.html) is the de-facto data interchange format of the internet, and [Pydantic](https://pydantic-docs.helpmanual.io/) is a library that makes parsing JSON in Python a breeze.
 
-This project provides a web interface through which you can quickly
-generate pydantic models from JSON objects.
+This project provides a web interface through which you can quickly generate pydantic models from JSON objects.
 
 ![website screenshot](images/screenshot.png)
 
@@ -54,9 +49,7 @@ Install Python Dependencies
 
 ```sh
 cd server
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
+pdm install
 ```
 
 ### Run The Project
@@ -74,7 +67,7 @@ Server
 
 ```sh
 cd server
-uvicorn app.main:app --reload
+pdm run dev
 ```
 
 <!-- CONTRIBUTING -->

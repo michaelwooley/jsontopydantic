@@ -4,7 +4,7 @@ from pydantic import BaseModel, Json, Field
 from mangum import Mangum
 from typing import Optional
 
-from .scripts.generator import translate
+from app.lib.generator import translate
 
 
 app = FastAPI()
@@ -21,8 +21,8 @@ app.add_middleware(
 
 
 class Options(BaseModel):
-    force_optional: bool = Field(False, alias="forceOptional")
-    snake_cased: bool = Field(False, alias="snakeCased")
+    force_optional: bool = Field(default=False, alias="forceOptional")
+    snake_cased: bool = Field(default=False, alias="snakeCased")
 
 
 class BasicRequest(BaseModel):

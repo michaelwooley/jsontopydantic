@@ -166,3 +166,4 @@ client/.eslintcache
 function.zip
 
 **/deploy-prod.sh
+.pdm.toml

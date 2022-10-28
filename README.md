@@ -33,6 +33,7 @@ To get a local copy up and running follow these simple steps.
 
 - npm
 - python 3.7+
+  - [pdm](https://pdm.fming.dev/) (`pipx install pdm`)
 
 ### Install Dependencies
 

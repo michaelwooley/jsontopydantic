@@ -1,15 +1,25 @@
-[tool.poetry]
+[project]
 name = "jsontopydantic"
 version = "0.1.0"
 description = "[JSON to Pydantic](https://jsontopydantic.com) is a tool that lets you convert JSON objects into Pydantic models."
-authors = ["Michael Wooley <william.wooley@motional.com>"]
-license = "MIT"
-
-[tool.poetry.dependencies]
-python = "^3.9"
-
-[tool.poetry.dev-dependencies]
+authors = [{ name = "Michael Wooley", email = "william.wooley@motional.com" }]
+dependencies = [
+    "fastapi>=0.85.1",
+    "pydantic[dotenv,email]>=1.10.2",
+    "datamodel-code-generator>=0.13.3",
+    "mangum>=0.16.0",
+    "genson>=1.2.2",
+]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+[project.optional-dependencies]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
+
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = ["black>=22.10.0"]
+test = ["pytest>=7.2.0"]

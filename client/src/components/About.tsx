@@ -4,7 +4,7 @@ import logo from "images/GitHub-Mark-Light-120px-plus.png";
 export default function About(): JSX.Element {
     return (
         <>
-            <div className="about">
+            <div className="content">
                 <h2>What is this?</h2>
                 <p>
                     JSON to Pydantic is a tool that lets you convert JSON objects into
@@ -30,5 +30,5 @@ export default function About(): JSX.Element {
                 <img id="github-logo" src={logo} alt="GitHub Logo" />
             </a>
         </>
-    )
+    );
 }

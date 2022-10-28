@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import AceEditor from "react-ace";
 
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-monokai";
 import About from "components/About";
+import * as constants from "lib/constants";
 
 const apiUrl = "https://ufgjji253b.execute-api.us-east-1.amazonaws.com/prod";
 const defaultJsonObject = '{\n\t"foo": 5, \n\t"barBaz": "hello"\n}';
@@ -84,7 +84,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>JSON to Pydantic Converter</h1>
+      <h1>{constants.APP_NAME}</h1>
       <div className="editor-container">
         <div className="editor">
           <h3>JSON</h3>
@@ -140,7 +140,7 @@ function App() {
         </div>
       </div>
       <br></br>
-      <About></About>
+      <About />
     </div>
   );
 }

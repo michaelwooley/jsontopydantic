@@ -11,12 +11,15 @@
     "web-vitals": "^2.1.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev:app": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "css-build": "node-sass --omit-source-map-url src/style/style.scss src/style/style.css",
+    "dev:style": "npm run css-build -- --watch",
+    "dev": "run-p dev:*"
   },
   "eslintConfig": {
     "extends": [
@@ -47,14 +50,6 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.4.0",
-    "@types/node": "^17.0.10",
-    "@types/react": "^17.0.38",
-    "@types/react-dom": "^17.0.11",
-    "eslint": "^8.0.0",
     "@storybook/addon-actions": "^6.5.13",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-interactions": "^6.5.13",
@@ -65,7 +60,20 @@
     "@storybook/preset-create-react-app": "^4.1.2",
     "@storybook/react": "^6.5.13",
     "@storybook/testing-library": "^0.0.13",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.10",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
     "babel-plugin-named-exports-order": "^0.0.2",
+    "bulma": "^0.9.4",
+    "bulma-prefers-dark": "^0.1.0-beta.1",
+    "bulmaswatch": "^0.8.1",
+    "eslint": "^8.0.0",
+    "node-sass": "^7.0.3",
+    "npm-run-all": "^4.1.5",
     "prop-types": "^15.8.1",
     "typescript": "^4.5.5",
     "webpack": "^5.74.0"

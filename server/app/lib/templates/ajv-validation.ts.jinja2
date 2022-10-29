@@ -1,7 +1,10 @@
 /** {{ model_name }} - Validation */
 import Ajv, {JTDDataType} from "ajv/dist/jtd";
+import addFormats from "ajv-formats";
 
 const ajv = new Ajv();
+addFormats(ajv);
+
 
 export const {{ model_name }} = {{ schema }} as const;
 

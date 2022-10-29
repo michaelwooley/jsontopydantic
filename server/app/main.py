@@ -8,7 +8,7 @@ from app.lib.generator import translate
 
 
 app = FastAPI(title="JsonToPydantic")
-
+app.openapi()
 origins = ["*"]
 
 app.add_middleware(
@@ -20,18 +20,20 @@ app.add_middleware(
 )
 
 
-class Options(BaseModel):
+class TranslateOptions(BaseModel):
     force_optional: bool = Field(
         default=False,
         alias="forceOptional",
         description="Force everything to be optional.",
+        title="Force optiasfonal",
+        detail=True,
     )
     snake_cased: bool = Field(default=False, alias="snakeCased")
 
 
 class BasicRequest(BaseModel):
     data: Json
-    options: Optional[Options]
+    options: Optional[TranslateOptions]
 
 
 class TranslateResponse(BaseModel):
@@ -41,7 +43,11 @@ class TranslateResponse(BaseModel):
 @app.post("/", name="translate", response_model=TranslateResponse, tags=["translate"])
 async def convert(basic_request: BasicRequest) -> TranslateResponse:
     print(basic_request)
-    options = basic_request.options if basic_request.options is not None else Options()
+    options = (
+        basic_request.options
+        if basic_request.options is not None
+        else TranslateOptions()
+    )
     return TranslateResponse(
         model=translate(
             basic_request.data,

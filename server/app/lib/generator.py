@@ -23,7 +23,7 @@ from typing import (
 )
 from urllib.parse import ParseResult
 from app.lib.models import TranslateRequest
-
+import json
 
 if TYPE_CHECKING:
     cached_property = property
@@ -119,6 +119,7 @@ def generate_inner(
         input_ = input_.expanduser().resolve()
     if input_file_type == InputFileType.Auto:
         try:
+            print(input_)
             input_text_ = (
                 get_first_file(input_).read_text(encoding=encoding)
                 if isinstance(input_, Path)
@@ -169,7 +170,7 @@ def generate_inner(
                         else input_text
                     )
             except:
-                raise Error("Invalid file format")
+                raise Error("Invalid file format [bottom]")
             import json
 
             from genson import SchemaBuilder
@@ -280,6 +281,9 @@ def generate(req: TranslateRequest) -> dict[str, str]:
 
     # try: (Error handling to be done at top level)
     config = MainConfig.parse_obj({"input": req.data, **req.options.dict()})
+    config.input = (
+        req.data
+    )  # [!] MainConfig coerves 'input' to a path?! even when it looks nothing like it...
     # config.merge_args(namespace)
 
     if config.debug:  # pragma: no cover
@@ -299,7 +303,6 @@ def generate(req: TranslateRequest) -> dict[str, str]:
     input_ = config.input
     if input_ is None:
         raise ValueError("Received empty input.")
-
     # try: # TODO Better error handling - see try/except
     return generate_inner(
         input_=input_,

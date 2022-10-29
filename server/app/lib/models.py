@@ -6,6 +6,7 @@ SEE: https://github.com/pydantic/pydantic/blob/main/docs/build/schema_mapping.py
 
 # https://uniforms.tools/playground/#?N4IgDgTgpgzlAuIBcICCATd0YwAQAoApAZQHkA5YgYwAsoBbAQwEoQAacCAezBmVEYBXeFxiMAblGQAzRgBs4HISLGSAIlDmMAnsgCMABgMd0ASzEAjOVHQz5ikFoubk8CIKgcwWqlBpc5dCgIOwVPEGhGdFIAOzldJFkwjhhaBkZkEHx8ZlwAXgA-XGAAHRjcXCouGJh4XEYAK3F83BioAHdcVCb8YHq5OQBRCG4IGCRcNw82XEE4DVlBOXhxyfdPXABrKG12rgh0VYBtEpBBGNNpffoYU4BdXABfZgBuMoqqmrrUuiYW0pA8FM8GspwmpwAKhBGDUtPAoKQwEDqrd2LhTkFUhBTEjTNUweiQIjkTVcFcIGsYTA4aYYgBzXAkCiTLi4AAK2nQMKBVAAdKcZqd4NowFACacuBYGlAqPABYTIDxgkDYASATAYoxtgBhRhwABipk06DVQuBoOQhOImu2lT1UDJRsC8oxsCo2Nx-Mtp21NBhdIdVEY9E0AFog3BHcbWsGHSJcBqtVBw_aXSAgotlgSkooKkKRWLvSALFwAlAYadHoKQOTfMS8Zq5KbAebC-CQPr9r5cDwSfI05j3TiSeKO12Hb2G_IyftcNAAI6CUzQdBRwKo6sZoRZy05jaE4Wi0clssVkBVwlULQ4cix5tAkFtwna694TUhgduj0jovEBCVV8YxDHtpDnUs6noLggibNFXUzOUiwAWSgzQ00PJ9TlqbF6Urat4EYCAA3gDl4H8GIADVghgBt71bUcIQIojcDAbRSOqXBJDGGjYPTL9h249t8MI_8WLY8pOOo9j8C3JZ4AmABmXkAHZmAFfMj2QTC3FpOlTlwTcoHg0dFKU-VCXkORSGkAkjgBAASaBrKLABiAB6DNaWBBsYFckiyMorivUeO5HgvODPJJVEJgBPzqgCySYlox9R1iiiqO4gysX4r121QcooBiQQQ2hEl-R4gqips05FIANjTEz6t5AAORqAE5GsMe5QseN5EvKMlzllBtKkieFyPkUwuRECB8B-dJclKfqPhROpxAmqbZzyeoml5Kp6DAUxrFmtImFeMp3gqOcEEECBynwSDoNyQpiguy6OPWxhpvulC5DOvq3oqS4CDWuRJs-_ZeWCUY8AAMhh97QY2iBIZGfYYF5ax6VIhbXoB6B4Bu8o-iCfDDtWEGwemlHoaeXqAaeXGeoux5zv6z5agTE7GHGxHwYpLb3XLMaPq-ubTt6i78cJ1oOkZMhKC5gAhbF0ADY7fkYGYxe5kX9j-54cnYEAYH8doAEk4lpKBhlGUIHD1bQYioWJiEECx6GBO3wgdp3Yh5ympESewoCrQFfkDs4vm0axbEeIA
 """
+from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, Field, Json
@@ -13,9 +14,36 @@ from pydantic import BaseModel, Field, Json
 from datamodel_code_generator.format import (
     PythonVersion,
 )
+from datamodel_code_generator import InputFileType
 import humps
 from pydantic.schema import encode_default
 from pydantic.fields import ModelField
+import orjson
+
+
+class PythonVersionStr(str, Enum):
+    """Make `PythonVersion` an explicit string enum"""
+
+    PY_36 = "3.6"
+    PY_37 = "3.7"
+    PY_38 = "3.8"
+    PY_39 = "3.9"
+    PY_310 = "3.10"
+
+
+class InputFileTypeStr(str, Enum):
+    Auto = "auto"
+    OpenAPI = "openapi"
+    JsonSchema = "jsonschema"
+    Json = "json"
+    Yaml = "yaml"
+    Dict = "dict"
+    CSV = "csv"
+
+
+def orjson_dumps(v, *, default):
+    # orjson.dumps returns bytes, to match standard json.dumps we need to decode
+    return orjson.dumps(v, default=default).decode()
 
 
 def _schema_extra_get_field(name: str, model: type["AppBaseModel"]) -> ModelField:
@@ -38,23 +66,14 @@ def _schema_extra_add_default_from_factory(
 class AppBaseModel(BaseModel):
     class Config:
         alias_generator = humps.camelize
+        json_loads = orjson.loads
+        json_dumps = orjson_dumps
 
         @staticmethod
         def schema_extra(schema: dict[str, Any], model: type["AppBaseModel"]) -> None:
             for name, prop in schema.get("properties", {}).items():
                 f = _schema_extra_get_field(name=name, model=model)
                 _schema_extra_add_default_from_factory(name=name, prop=prop, field=f)
-
-
-class TranslateRequest(AppBaseModel):
-    data: Json
-    options: "TranslateOptions"
-
-
-class TranslateResponse(AppBaseModel):
-    py: dict[str, str] = Field(
-        description="Keys are 'paths' while values contain the data."
-    )
 
 
 class TranslateOptions(AppBaseModel):
@@ -78,10 +97,17 @@ class TranslateOptions(AppBaseModel):
         description="Set class name of root model",
         # advanced=False,
     )
-    target_python_version: PythonVersion = Field(
-        default=PythonVersion.PY_37,
+    target_python_version: PythonVersionStr = Field(
+        default=PythonVersionStr.PY_37,
         title="Target python version",
         description="target python version (default: 3.7)",
+        # advanced=True,
+    )
+    input_file_type: InputFileTypeStr = Field(
+        # [!] We really need to set this explicitly :|
+        default=InputFileTypeStr.Json,
+        title="Input file type",
+        description="Input file type - the generator can guess but it can be helpful to be clear about what you think you're giving the generator.",
         # advanced=True,
     )
 
@@ -284,3 +310,14 @@ class TranslateOptions(AppBaseModel):
     #             )
     #             values["target_python_version"] = PythonVersion.PY_310
     #     return values
+
+
+class TranslateRequest(AppBaseModel):
+    data: str  # Json to tempermental
+    options: "TranslateOptions"
+
+
+class TranslateResponse(AppBaseModel):
+    py: dict[str, str] = Field(
+        description="Keys are 'paths' while values contain the data."
+    )

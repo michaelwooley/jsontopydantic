@@ -1,5 +1,3 @@
-import contextlib
-import os
 from datetime import datetime, timezone
 
 # from enum import Enum
@@ -11,59 +9,22 @@ from typing import (
     Callable,
     DefaultDict,
     Dict,
-    Iterator,
     List,
     Mapping,
     Optional,
     Sequence,
     Set,
-    TextIO,
     Tuple,
     Type,
-    TypeVar,
     Union,
 )
 from urllib.parse import ParseResult
 
-import pysnooper
-import yaml
 
 if TYPE_CHECKING:
     cached_property = property
-    from yaml import SafeLoader
-
     Protocol = object
     runtime_checkable: Callable[..., Any]
-else:
-    try:
-        from typing import Protocol
-    except ImportError:
-        from typing_extensions import Protocol
-    try:
-        from typing import runtime_checkable
-    except ImportError:
-        from typing_extensions import runtime_checkable
-    try:
-        from yaml import CSafeLoader as SafeLoader
-    except ImportError:  # pragma: no cover
-        from yaml import SafeLoader
-
-    try:
-        from functools import cached_property
-    except ImportError:
-        _NOT_FOUND = object()
-
-        class cached_property:
-            def __init__(self, func: Callable) -> None:
-                self.func: Callable = func
-                self.__doc__: Any = func.__doc__
-
-            def __get__(self, instance: Any, owner: Any = None) -> Any:
-                value = instance.__dict__.get(self.func.__name__, _NOT_FOUND)
-                if value is _NOT_FOUND:  # pragma: no cover
-                    value = instance.__dict__[self.func.__name__] = self.func(instance)
-                return value
-
 
 from datamodel_code_generator.format import PythonVersion
 from datamodel_code_generator.model.pydantic import dump_resolve_reference_action
@@ -79,130 +40,6 @@ from datamodel_code_generator import (
     RAW_DATA_TYPES,
     Error,
 )
-
-# T = TypeVar("T")
-
-# pysnooper.tracer.DISABLED = True
-
-# DEFAULT_BASE_CLASS: str = "pydantic.BaseModel"
-
-# SafeLoader.yaml_constructors[
-#     "tag:yaml.org,2002:timestamp"
-# ] = SafeLoader.yaml_constructors["tag:yaml.org,2002:str"]
-
-
-# def load_yaml(stream: Union[str, TextIO]) -> Any:
-#     return yaml.load(stream, Loader=SafeLoader)
-
-
-# def load_yaml_from_path(path: Path, encoding: str) -> Any:
-#     with path.open(encoding=encoding) as f:
-#         return load_yaml(f)
-
-
-# def enable_debug_message() -> None:  # pragma: no cover
-#     pysnooper.tracer.DISABLED = False
-
-
-# def snooper_to_methods(  # type: ignore
-#     output=None,
-#     watch=(),
-#     watch_explode=(),
-#     depth=1,
-#     prefix="",
-#     overwrite=False,
-#     thread_info=False,
-#     custom_repr=(),
-#     max_variable_length=100,
-# ) -> Callable[..., Any]:
-#     def inner(cls: Type[T]) -> Type[T]:
-#         import inspect
-
-#         methods = inspect.getmembers(cls, predicate=inspect.isfunction)
-#         for name, method in methods:
-#             snooper_method = pysnooper.snoop(
-#                 output,
-#                 watch,
-#                 watch_explode,
-#                 depth,
-#                 prefix,
-#                 overwrite,
-#                 thread_info,
-#                 custom_repr,
-#                 max_variable_length,
-#             )(method)
-#             setattr(cls, name, snooper_method)
-#         return cls
-
-#     return inner
-
-
-# @contextlib.contextmanager
-# def chdir(path: Optional[Path]) -> Iterator[None]:
-#     """Changes working directory and returns to previous on exit."""
-
-#     if path is None:
-#         yield
-#     else:
-#         prev_cwd = Path.cwd()
-#         try:
-
-#             os.chdir(path if path.is_dir() else path.parent)
-#             yield
-#         finally:
-#             os.chdir(prev_cwd)
-
-
-# def is_openapi(text: str) -> bool:
-#     return "openapi" in load_yaml(text)
-
-
-# class InputFileType(Enum):
-#     Auto = "auto"
-#     OpenAPI = "openapi"
-#     JsonSchema = "jsonschema"
-#     Json = "json"
-#     Yaml = "yaml"
-#     Dict = "dict"
-#     CSV = "csv"
-
-
-# RAW_DATA_TYPES: List[InputFileType] = [
-#     InputFileType.Json,
-#     InputFileType.Yaml,
-#     InputFileType.Dict,
-#     InputFileType.CSV,
-# ]
-
-
-# class OpenAPIScope(Enum):
-#     Schemas = "schemas"
-#     Paths = "paths"
-
-
-# class Error(Exception):
-#     def __init__(self, message: str) -> None:
-#         self.message: str = message
-
-#     def __str__(self) -> str:
-#         return self.message
-
-
-# class InvalidClassNameError(Error):
-#     def __init__(self, class_name: str) -> None:
-#         self.class_name = class_name
-#         message = f"title={repr(class_name)} is invalid class name."
-#         super().__init__(message=message)
-
-
-# def get_first_file(path: Path) -> Path:  # pragma: no cover
-#     if path.is_file():
-#         return path
-#     elif path.is_dir():
-#         for child in path.rglob("*"):
-#             if child.is_file():
-#                 return child
-#     raise Error("File not found")
 
 
 def generate(
@@ -385,7 +222,7 @@ def generate(
     )
 
     # with chdir(output): # TODO What is this?
-    results = parser.parse()
+    results = parser.parse()  # <~~~ Big line
     if not input_filename:  # pragma: no cover
         if isinstance(input_, str):
             input_filename = "<stdin>"
@@ -396,7 +233,7 @@ def generate(
     if not results:
         raise Error("Models not found in the input data")
     elif isinstance(results, str):
-
+        # Previously the key here was "out"
         modules = {"main.py": (results, input_filename)}
     else:
         raise NotImplementedError(
@@ -422,25 +259,17 @@ def generate(
     if not disable_timestamp:
         header += f"\n#   timestamp: {timestamp}"
 
-    # file: Optional[IO[Any]]
     outputs: dict[str, str] = {}
     for i, (path, body_and_filename) in enumerate(modules.items()):
         lines: list[str] = []
         body, filename = body_and_filename
-        # if path is None:
-        #     file = None
-        # else:
-        #     if not path.parent.exists():
-        #         path.parent.mkdir(parents=True)
-        #     file = path.open("wt", encoding=encoding)
+        # Normal version will possibly write to disk here.
 
         lines.append(header.format(filename))
         if body:
             lines.append("")
             lines.append(body.rstrip())
 
-        # if file is not None:
-        #     file.close()
         outputs[path or f"main{i}.py"] = "\n".join(lines)
 
     return outputs

@@ -5,7 +5,7 @@ from pydantic import BaseModel, Json, Field
 from mangum import Mangum
 from typing import Optional
 
-from app.lib.dmcg_api import generate as generate_pydantic_schema
+from app.lib.generator import generate as generate_pydantic_schema
 
 
 app = FastAPI(title="JsonToPydantic")

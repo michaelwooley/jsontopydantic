@@ -1,3 +1,4 @@
+"""This codegen is strictly meant for dev purposes. Not to be used in app"""
 import json
 from pathlib import Path
 from typing import Callable

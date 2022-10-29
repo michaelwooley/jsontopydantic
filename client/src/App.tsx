@@ -1,9 +1,10 @@
 import React from "react";
 
 import About from "components/About";
-import { Box, Flex, Grid, GridItem, SimpleGrid, VStack, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, SimpleGrid, VStack, Text, Button, useDisclosure } from "@chakra-ui/react";
 import Navbar from "components/Navbar";
 import EditorPanel from "components/EditorLayout";
+import AppLayout from "components/AppLayout";
 
 // const apiUrl = "https://ufgjji253b.execute-api.us-east-1.amazonaws.com/prod";
 // const defaultJsonObject = '{\n\t"foo": 5, \n\t"barBaz": "hello"\n}';
@@ -150,6 +151,7 @@ import EditorPanel from "components/EditorLayout";
 
 
 function App() {
+  const { isOpen: sidebarOpen, onToggle } = useDisclosure();
   return (
     <>
       {/* <VStack
@@ -173,14 +175,13 @@ function App() {
         </Flex>
 
       </VStack> */}
-      <Flex
+      {/* <Flex
         direction={"column"}
         height={"100vh"}
       >
         <Navbar />
         <Box flex='1' px={4} overflow={"auto"}>
           <SimpleGrid height={"80vh"} columns={2} spacing={4}>
-
             <EditorPanel title={"JSON"} mode="json"
               name="json-editor"></EditorPanel>
             <EditorPanel title={"pydantic"} mode="python"
@@ -191,7 +192,20 @@ function App() {
         <Box pl='2' bg='magenta' >
           footer
         </Box>
-      </Flex>
+      </Flex> */}
+
+      <AppLayout sidebarOpen={sidebarOpen} navbar={<Navbar />} footer={<Box pl='2' bg='magenta' >
+        footer
+      </Box>} sidebar={<div>{"asfs".repeat(3553)}</div>}>
+        <Button onClick={onToggle}>Click Me</Button>
+        <SimpleGrid height={"80vh"} columns={2} spacing={4}>
+          <EditorPanel title={"JSON"} mode="json"
+            name="json-editor"></EditorPanel>
+          <EditorPanel title={"pydantic"} mode="python"
+            name="python-editor"></EditorPanel>
+        </SimpleGrid>
+        <About />
+      </AppLayout>
     </>
   );
 }

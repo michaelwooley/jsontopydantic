@@ -23,6 +23,16 @@ type RequestBody = {
   options: RequestOptions;
 };
 
+function validJson(newValue: string): boolean {
+  try {
+    JSON.parse(newValue);
+  } catch (_) {
+    return false;
+  }
+  return true;
+}
+
+
 function App() {
   const [options, setOptions] = useState(defaultOptions);
   const [jsonObject, setJsonObject] = useState(defaultJsonObject);
@@ -36,14 +46,6 @@ function App() {
     }
   }, [jsonObject, options]);
 
-  function validJson(newValue: string): boolean {
-    try {
-      JSON.parse(newValue);
-    } catch (_) {
-      return false;
-    }
-    return true;
-  }
 
   function onChange(newValue: string) {
     setJsonObject(newValue);

@@ -7,7 +7,7 @@ import type { TranslateResponse } from '../models/TranslateResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
-export class DefaultService {
+export class TranslateService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 

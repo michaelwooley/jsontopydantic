@@ -21,7 +21,11 @@ app.add_middleware(
 
 
 class Options(BaseModel):
-    force_optional: bool = Field(default=False, alias="forceOptional")
+    force_optional: bool = Field(
+        default=False,
+        alias="forceOptional",
+        description="Force everything to be optional.",
+    )
     snake_cased: bool = Field(default=False, alias="snakeCased")
 
 
@@ -34,7 +38,7 @@ class TranslateResponse(BaseModel):
     model: str
 
 
-@app.post("/", name="translate", response_model=TranslateResponse)
+@app.post("/", name="translate", response_model=TranslateResponse, tags=["translate"])
 async def convert(basic_request: BasicRequest) -> TranslateResponse:
     print(basic_request)
     options = basic_request.options if basic_request.options is not None else Options()

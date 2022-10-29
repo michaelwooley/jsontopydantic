@@ -5,13 +5,13 @@ import type { BaseHttpRequest } from './core/BaseHttpRequest';
 import type { OpenAPIConfig } from './core/OpenAPI';
 import { FetchHttpRequest } from './core/FetchHttpRequest';
 
-import { DefaultService } from './services/DefaultService';
+import { TranslateService } from './services/TranslateService';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
 export class JsonToPydantic {
 
-    public readonly default: DefaultService;
+    public readonly translate: TranslateService;
 
     public readonly request: BaseHttpRequest;
 
@@ -28,7 +28,7 @@ export class JsonToPydantic {
             ENCODE_PATH: config?.ENCODE_PATH,
         });
 
-        this.default = new DefaultService(this.request);
+        this.translate = new TranslateService(this.request);
     }
 }
 

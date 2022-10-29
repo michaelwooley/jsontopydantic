@@ -15,4 +15,10 @@ export type { Options } from './models/Options';
 export type { TranslateResponse } from './models/TranslateResponse';
 export type { ValidationError } from './models/ValidationError';
 
-export { DefaultService } from './services/DefaultService';
+export { $BasicRequest } from './schemas/$BasicRequest';
+export { $HTTPValidationError } from './schemas/$HTTPValidationError';
+export { $Options } from './schemas/$Options';
+export { $TranslateResponse } from './schemas/$TranslateResponse';
+export { $ValidationError } from './schemas/$ValidationError';
+
+export { TranslateService } from './services/TranslateService';

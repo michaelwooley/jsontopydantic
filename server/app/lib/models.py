@@ -6,7 +6,7 @@ SEE: https://github.com/pydantic/pydantic/blob/main/docs/build/schema_mapping.py
 
 # https://uniforms.tools/playground/#?N4IgDgTgpgzlAuIBcICCATd0YwAQAoApAZQHkA5YgYwAsoBbAQwEoQAacCAezBmVEYBXeFxiMAblGQAzRgBs4HISLGSAIlDmMAnsgCMABgMd0ASzEAjOVHQz5ikFoubk8CIKgcwWqlBpc5dCgIOwVPEGhGdFIAOzldJFkwjhhaBkZkEHx8ZlwAXgA-XGAAHRjcXCouGJh4XEYAK3F83BioAHdcVCb8YHq5OQBRCG4IGCRcNw82XEE4DVlBOXhxyfdPXABrKG12rgh0VYBtEpBBGNNpffoYU4BdXABfZgBuMoqqmrrUuiYW0pA8FM8GspwmpwAKhBGDUtPAoKQwEDqrd2LhTkFUhBTEjTNUweiQIjkTVcFcIGsYTA4aYYgBzXAkCiTLi4AAK2nQMKBVAAdKcZqd4NowFACacuBYGlAqPABYTIDxgkDYASATAYoxtgBhRhwABipk06DVQuBoOQhOImu2lT1UDJRsC8oxsCo2Nx-Mtp21NBhdIdVEY9E0AFog3BHcbWsGHSJcBqtVBw_aXSAgotlgSkooKkKRWLvSALFwAlAYadHoKQOTfMS8Zq5KbAebC-CQPr9r5cDwSfI05j3TiSeKO12Hb2G_IyftcNAAI6CUzQdBRwKo6sZoRZy05jaE4Wi0clssVkBVwlULQ4cix5tAkFtwna694TUhgduj0jovEBCVV8YxDHtpDnUs6noLggibNFXUzOUiwAWSgzQ00PJ9TlqbF6Urat4EYCAA3gDl4H8GIADVghgBt71bUcIQIojcDAbRSOqXBJDGGjYPTL9h249t8MI_8WLY8pOOo9j8C3JZ4AmABmXkAHZmAFfMj2QTC3FpOlTlwTcoHg0dFKU-VCXkORSGkAkjgBAASaBrKLABiAB6DNaWBBsYFckiyMorivUeO5HgvODPJJVEJgBPzqgCySYlox9R1iiiqO4gysX4r121QcooBiQQQ2hEl-R4gqips05FIANjTEz6t5AAORqAE5GsMe5QseN5EvKMlzllBtKkieFyPkUwuRECB8B-dJclKfqPhROpxAmqbZzyeoml5Kp6DAUxrFmtImFeMp3gqOcEEECBynwSDoNyQpiguy6OPWxhpvulC5DOvq3oqS4CDWuRJs-_ZeWCUY8AAMhh97QY2iBIZGfYYF5ax6VIhbXoB6B4Bu8o-iCfDDtWEGwemlHoaeXqAaeXGeoux5zv6z5agTE7GHGxHwYpLb3XLMaPq-ubTt6i78cJ1oOkZMhKC5gAhbF0ADY7fkYGYxe5kX9j-54cnYEAYH8doAEk4lpKBhlGUIHD1bQYioWJiEECx6GBO3wgdp3Yh5ympESewoCrQFfkDs4vm0axbEeIA
 """
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, Json
 
@@ -49,17 +49,6 @@ class AppBaseModel(BaseModel):
 class TranslateRequest(AppBaseModel):
     data: Json
     options: "TranslateOptions"
-
-
-# class TranslateOptions(BaseModel):
-#     force_optional: bool = Field(
-#         default=False,
-#         alias="forceOptional",
-#         description="Force everything to be optional.",
-#         title="Force optiasfonal",
-#         detail=True,
-#     )
-#     snake_cased: bool = Field(default=False, alias="snakeCased")
 
 
 class TranslateResponse(AppBaseModel):

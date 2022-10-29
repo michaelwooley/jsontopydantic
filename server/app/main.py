@@ -25,6 +25,16 @@ app.add_middleware(
 async def post_generate_pydantic_schema(
     basic_request: TranslateRequest,
 ) -> TranslateResponse:
+    """Generates pydantic model(s) from JSON examples (and - I think - Openapi as well).
+
+    TODO The main controller here should capture stdout/stderr for reporting to end-user.
+
+    Args:
+        basic_request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     out = generate_pydantic_schema(req=basic_request)
     return TranslateResponse(py=out)
 

@@ -1,3 +1,8 @@
+"""Port + tweak of main functions in datamodel_code_generator in order to better accommodate work done within http requests:
+
+1. Fewer assumptions about local filesystem (no saving out, etc.)
+2. Return the results directly rather than pull from stdout, etc.
+"""
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import (
@@ -39,7 +44,6 @@ from datamodel_code_generator import (
     RAW_DATA_TYPES,
     Error,
     enable_debug_message,
-    InvalidClassNameError,
 )
 from datamodel_code_generator.__main__ import Config as MainConfig
 
@@ -241,18 +245,6 @@ def generate_inner(
         raise NotImplementedError(
             "Do not support modular reference yet. Can in the future..."
         )
-        # if output is None:
-        #     raise Error("Modular references require an output directory")
-        # if output.suffix:
-        #     raise Error("Modular references require an output directory, not a file")
-        # modules = {
-        #     output.joinpath(*name): (
-        #         result.body,
-        #         str(result.source.as_posix() if result.source else input_filename),
-        #     )
-        #     for name, result in sorted(results.items())
-        # }
-
     timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
     header = """\
@@ -278,38 +270,17 @@ def generate_inner(
 
 
 def generate(req: TranslateRequest) -> dict[str, str]:
-    """Main function."""
+    """Main function. This is a modified version of `datamodel_code_generator.__main__.main`
+
+    TODO The main controller here should capture stdout/stderr for reporting to end-user.
+    """
 
     # TODO Make version info more clear eventually.
-    # if namespace.version:
-    #     from datamodel_code_generator.version import version
-
     # TODO Figure out what to do with black.
-    # root = black_find_project_root((Path().resolve(),))
-    # pyproject_toml_path = root / "pyproject.toml"
-    # if pyproject_toml_path.is_file():
-    #     pyproject_toml: Dict[str, Any] = {
-    #         k.replace("-", "_"): v
-    #         for k, v in toml.load(str(pyproject_toml_path))
-    #         .get("tool", {})
-    #         .get("datamodel-codegen", {})
-    #         .items()
-    #     }
-    # else:
-    #     pyproject_toml = {}
 
     # try: (Error handling to be done at top level)
     config = MainConfig.parse_obj({"input": req.data, **req.options.dict()})
     # config.merge_args(namespace)
-
-    # if not is_supported_in_black(config.target_python_version):  # pragma: no cover
-    #     print(
-    #         f"Installed black doesn't support Python version {config.target_python_version.value}.\n"  # type: ignore
-    #         f"You have to install a newer black.\n"
-    #         f"Installed black version: {black.__version__}",
-    #         file=sys.stderr,
-    #     )
-    #     return Exit.ERROR
 
     if config.debug:  # pragma: no cover
         enable_debug_message()
@@ -319,33 +290,11 @@ def generate(req: TranslateRequest) -> dict[str, str]:
         extra_template_data = None
     else:
         raise NotImplementedError("Cannnot handle extra template data yet.")
-        # with config.extra_template_data as data:
-        #     try:
-        #         extra_template_data = json.load(
-        #             data, object_hook=lambda d: defaultdict(dict, **d)
-        #         )
-        #     except json.JSONDecodeError as e:
-        #         print(f"Unable to load extra template data: {e}", file=sys.stderr)
-        #         return Exit.ERROR
 
     if config.aliases is None:
         aliases = None
     else:
         raise NotImplementedError("Not handling config aliases in config yet.")
-        # with config.aliases as data:
-        #     try:
-        #         aliases = json.load(data)
-        #     except json.JSONDecodeError as e:
-        #         print(f"Unable to load alias mapping: {e}", file=sys.stderr)
-        #         return Exit.ERROR
-        # if not isinstance(aliases, dict) or not all(
-        #     isinstance(k, str) and isinstance(v, str) for k, v in aliases.items()
-        # ):
-        #     print(
-        #         'Alias mapping must be a JSON string mapping (e.g. {"from": "to", ...})',
-        #         file=sys.stderr,
-        #     )
-        #     return Exit.ERROR
 
     input_ = config.input
     if input_ is None:
@@ -396,14 +345,3 @@ def generate(req: TranslateRequest) -> dict[str, str]:
         use_double_quotes=config.use_double_quotes,
         use_union_operator=config.use_union_operator,
     )
-    # except InvalidClassNameError as e:
-    #     print(f"{e} You have to set `--class-name` option", file=sys.stderr)
-    #     return Exit.ERROR
-    # except Error as e:
-    #     print(str(e), file=sys.stderr)
-    #     return Exit.ERROR
-    # except Exception:
-    #     import traceback
-
-    #     print(traceback.format_exc(), file=sys.stderr)
-    #     return Exit.ERROR

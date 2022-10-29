@@ -26,3 +26,4 @@ test = ["pytest>=7.2.0"]
 
 [tool.pdm.scripts]
 dev = "uvicorn app.main:app --reload"
+web = { shell = "cd ../client && npm run dev" }

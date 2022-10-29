@@ -11,14 +11,15 @@
     "web-vitals": "^2.1.3"
   },
   "scripts": {
-    "dev:py": "echo 'NOT RUNNING!! \"cd ../server pdm run dev\"'",
+    "dev:py": "./scripts/dev-server.sh",
     "dev:web": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "dev": "concurrently -c 'bgBlue.bold,bgMagenta.bold,bgGreen.bold' 'npm run dev:*'"
+    "dev": "concurrently -c 'bgBlue.bold,bgMagenta.bold,bgGreen.bold' 'npm run dev:*'",
+    "codegen": "openapi --input http://127.0.0.1:8000/openapi.json --output src/lib/jsonToPydantic --name JsonToPydantic --client fetch"
   },
   "eslintConfig": {
     "extends": [
@@ -71,6 +72,7 @@
     "bulmaswatch": "^0.8.1",
     "concurrently": "^7.5.0",
     "eslint": "^8.0.0",
+    "openapi-typescript-codegen": "^0.23.0",
     "sass": "^1.55.0",
     "typescript": "^4.5.5",
     "webpack": "^5.74.0"

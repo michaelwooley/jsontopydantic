@@ -7,7 +7,7 @@ from typing import Optional
 from app.lib.generator import translate
 
 
-app = FastAPI()
+app = FastAPI(title="JsonToPydantic")
 
 origins = ["*"]
 
@@ -30,17 +30,21 @@ class BasicRequest(BaseModel):
     options: Optional[Options]
 
 
-@app.post("/")
-async def convert(basic_request: BasicRequest):
+class TranslateResponse(BaseModel):
+    model: str
+
+
+@app.post("/", name="translate", response_model=TranslateResponse)
+async def convert(basic_request: BasicRequest) -> TranslateResponse:
     print(basic_request)
     options = basic_request.options if basic_request.options is not None else Options()
-    return {
-        "model": translate(
+    return TranslateResponse(
+        model=translate(
             basic_request.data,
             options.force_optional,
             options.snake_cased,
         )
-    }
+    )
 
 
 handler = Mangum(app)

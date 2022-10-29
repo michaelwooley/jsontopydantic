@@ -70,6 +70,16 @@ cd server
 pdm run dev
 ```
 
+## Server sdk
+
+```bash
+npx openapi-generator-cli generate -i http://127.0.0.1:8000/openapi.json -g typescript-axios -o ./test/ --additional-properties=supportsES6=true
+
+# BETTER
+npx openapi --input http://127.0.0.1:8000/openapi.json --output gen --name JsonToPydantic
+```
+
+
 <!-- CONTRIBUTING -->
 
 ## Contributing

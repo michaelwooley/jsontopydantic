@@ -11,9 +11,9 @@ import { FaGithub } from "react-icons/fa";
 
 export default function Nav() {
     return (
-        <>
+    
             <Box px={4}>
-                <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+                <Flex h={12} alignItems={'center'} justifyContent={'space-between'}>
                     <Box><Text fontSize="xl" fontWeight="bold">
                         {constants.APP_NAME}
                     </Text></Box>
@@ -69,6 +69,6 @@ export default function Nav() {
                     </Flex>
                 </Flex>
             </Box>
-        </>
+   
     );
 }

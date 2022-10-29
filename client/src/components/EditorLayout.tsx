@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React,{ useRef } from "react";
 import { useSize } from "@chakra-ui/react-use-size";
-import { Box, Center, Flex, SimpleGrid, StackDivider, VStack, Text, Square, Heading } from "@chakra-ui/react";
+import { Box, Flex, Heading,useColorModeValue } from "@chakra-ui/react";
 import AceEditor, { IAceEditorProps } from "react-ace";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-python";
@@ -12,13 +12,20 @@ export default function EditorPanel({ title, ...aceProps }: { title: string; } &
 
     return (
 
-        <Flex bg='tomato' direction={"column"}>
-            <Heading as={"h3"}>{title}</Heading>
-            <Box flex='1' bg='magenta' ref={elementRef}>
+        <Flex   bg={useColorModeValue('white', 'gray.900')}
+        boxShadow={'2xl'}
+        rounded={'md'}
+        overflow={'hidden'}  direction={"column"}>
+            <Box p={2}>
+            <Heading as={"h3"} size={"md"}>{title}</Heading>
+            </Box>
+            <Box borderRadius={"lg"} flex='1' bg='magenta' ref={elementRef}>
                 {dimensions && (
                     <AceEditor
                         height={`${dimensions.height}px`}
                         width={`${dimensions.width}px`}
+                        style={{"borderRadius":
+                "4px"}}
                         
                         theme="monokai"
                         editorProps={{ $blockScrolling: true }}

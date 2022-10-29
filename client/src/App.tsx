@@ -1,39 +1,34 @@
-import React, { useState, useEffect, useRef } from "react";
-import AceEditor from "react-ace";
-import { useSize } from "@chakra-ui/react-use-size";
-import "ace-builds/src-noconflict/mode-json";
-import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/theme-monokai";
+import React from "react";
+
 import About from "components/About";
-import * as constants from "lib/constants";
-import { Box, Center, Flex, SimpleGrid, StackDivider, VStack, Text, Square, Heading, useDimensions } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, SimpleGrid, VStack, Text } from "@chakra-ui/react";
 import Navbar from "components/Navbar";
 import EditorPanel from "components/EditorLayout";
 
-const apiUrl = "https://ufgjji253b.execute-api.us-east-1.amazonaws.com/prod";
-const defaultJsonObject = '{\n\t"foo": 5, \n\t"barBaz": "hello"\n}';
-const defaultOptions = { forceOptional: false, snakeCased: false };
-const loadingMessage = "# loading...";
-const invalidJsonMessage = "# invalid json";
+// const apiUrl = "https://ufgjji253b.execute-api.us-east-1.amazonaws.com/prod";
+// const defaultJsonObject = '{\n\t"foo": 5, \n\t"barBaz": "hello"\n}';
+// const defaultOptions = { forceOptional: false, snakeCased: false };
+// const loadingMessage = "# loading...";
+// const invalidJsonMessage = "# invalid json";
 
-type RequestOptions = {
-  forceOptional: boolean;
-  snakeCased: boolean;
-};
+// type RequestOptions = {
+//   forceOptional: boolean;
+//   snakeCased: boolean;
+// };
 
-type RequestBody = {
-  data: string;
-  options: RequestOptions;
-};
+// type RequestBody = {
+//   data: string;
+//   options: RequestOptions;
+// };
 
-function validJson(newValue: string): boolean {
-  try {
-    JSON.parse(newValue);
-  } catch (_) {
-    return false;
-  }
-  return true;
-}
+// function validJson(newValue: string): boolean {
+//   try {
+//     JSON.parse(newValue);
+//   } catch (_) {
+//     return false;
+//   }
+//   return true;
+// }
 
 
 // function App() {
@@ -155,71 +150,48 @@ function validJson(newValue: string): boolean {
 
 
 function App() {
-  const elementRef = useRef(null);
-  const dimensions = useSize(elementRef);
-
   return (
-    < >
-      <VStack
+    <>
+      {/* <VStack
         spacing={2}
         align='stretch'
 
       >
-        <Navbar></Navbar>
+        <Navbar/>
 
 
         <Flex direction={"column"} px={4}>
-          {/* <Center bg='green.500'>
-            <Text>Box 1</Text>
-          </Center>
-          <Square bg='blue.500' size='150px'>
-            <Text>Box 2</Text>
-          </Square>
-          <Box flex='1' bg='tomato'>
-            <Text>Box 3</Text>
-          </Box> */}
-          <SimpleGrid height={"80vh"} columns={2} spacing={5}>
-            {/* <Flex bg='tomato' direction={"column"}>
-              <Heading as={"h3"}>JSON</Heading>
-              <Box flex='1' bg='magenta' ref={elementRef}>
-                {dimensions && (
-                  <AceEditor
-                    height={`${dimensions.height}px`}
-                    width={`${dimensions.width}px`}
-                    // value={jsonObject}
-                    mode="json"
-                    theme="monokai"
-                    // onChange={onChange}
-                    name="json-editor"
-                    editorProps={{ $blockScrolling: true }}
-                  />
-                )}</Box>
-            </Flex> */}
+
+          <SimpleGrid height={"80vh"} columns={2} spacing={4}>
+   
              <EditorPanel title={"JSON"} mode="json"
-              theme="monokai"
               name="json-editor"></EditorPanel>
             <EditorPanel title={"pydantic"} mode="python"
-              theme="monokai"
               name="python-editor"></EditorPanel>
-            {/* <Flex bg='tomato' direction={"column"}>
-              <Heading as={"h3"}>Pydantic</Heading>
-              <Box flex='1' bg='magenta' ref={elementRef}>
-                {dimensions && (
-                  <AceEditor
-                    height={`${dimensions.height}px`}
-                    width={`${dimensions.width}px`}
-                    // value={pydanticModel}
-                    mode="python"
-                    theme="monokai"
-                    name="python-editor"
-                    editorProps={{ $blockScrolling: true }}
-                  />)}</Box>
-            </Flex> */}
           </SimpleGrid>
           <About />
         </Flex>
 
-      </VStack>
+      </VStack> */}
+      <Flex
+        direction={"column"}
+        height={"100vh"}
+      >
+        <Navbar />
+        <Box flex='1' px={4} overflow={"auto"}>
+          <SimpleGrid height={"80vh"} columns={2} spacing={4}>
+
+            <EditorPanel title={"JSON"} mode="json"
+              name="json-editor"></EditorPanel>
+            <EditorPanel title={"pydantic"} mode="python"
+              name="python-editor"></EditorPanel>
+          </SimpleGrid>
+          <About />
+        </Box>
+        <Box pl='2' bg='magenta' >
+          footer
+        </Box>
+      </Flex>
     </>
   );
 }

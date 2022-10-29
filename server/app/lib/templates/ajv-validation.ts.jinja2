@@ -1,0 +1,12 @@
+/** {{ model_name }} - Validation */
+import Ajv, {JTDDataType} from "ajv/dist/jtd";
+
+const ajv = new Ajv();
+
+export const {{ model_name }} = {{ schema }} as const;
+
+export type T{{ model_name }} = JTDDataType<typeof {{ model_name }}>;
+
+// type inference is not supported for JTDDataType yet
+export const validate = ajv.compile<T{{ model_name }}>({{ model_name }});
+export const serialize = ajv.compileSerializer<T{{ model_name }}>({{ model_name }});

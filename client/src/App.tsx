@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
-// import AceEditor from "react-ace";
-
-// import "ace-builds/src-noconflict/mode-json";
-// import "ace-builds/src-noconflict/mode-python";
-// import "ace-builds/src-noconflict/theme-monokai";
+import React, { useState, useEffect, useRef } from "react";
+import AceEditor from "react-ace";
+import { useSize } from "@chakra-ui/react-use-size";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/mode-python";
+import "ace-builds/src-noconflict/theme-monokai";
 import About from "components/About";
 import * as constants from "lib/constants";
-import TranslateOptionsComponent from "components/TranslateOptions";
-import { ColorModeSwitcher } from "components/ColorModeSwitcher";
-import { Box, Center, Flex, SimpleGrid, StackDivider, VStack, Text, Square } from "@chakra-ui/react";
+import { Box, Center, Flex, SimpleGrid, StackDivider, VStack, Text, Square, Heading, useDimensions } from "@chakra-ui/react";
 import Navbar from "components/Navbar";
+import EditorPanel from "components/EditorLayout";
 
 const apiUrl = "https://ufgjji253b.execute-api.us-east-1.amazonaws.com/prod";
 const defaultJsonObject = '{\n\t"foo": 5, \n\t"barBaz": "hello"\n}';
@@ -95,24 +94,24 @@ function validJson(newValue: string): boolean {
 //       <div className="editor-container">
 //         <div className="editor">
 //           <h3>JSON</h3>
-//           <AceEditor
-//             value={jsonObject}
-//             mode="json"
-//             theme="monokai"
-//             onChange={onChange}
-//             name="json-editor"
-//             editorProps={{ $blockScrolling: true }}
-//           />
+// <AceEditor
+//   value={jsonObject}
+//   mode="json"
+//   theme="monokai"
+//   onChange={onChange}
+//   name="json-editor"
+//   editorProps={{ $blockScrolling: true }}
+// />
 //         </div>
 //         <div className="editor">
-//           <h3>Pydantic</h3>
-//           <AceEditor
-//             value={pydanticModel}
-//             mode="python"
-//             theme="monokai"
-//             name="python-editor"
-//             editorProps={{ $blockScrolling: true }}
-//           />
+// <h3>Pydantic</h3>
+// <AceEditor
+//   value={pydanticModel}
+//   mode="python"
+//   theme="monokai"
+//   name="python-editor"
+//   editorProps={{ $blockScrolling: true }}
+// />
 //         </div>
 //       </div>
 
@@ -156,18 +155,21 @@ function validJson(newValue: string): boolean {
 
 
 function App() {
+  const elementRef = useRef(null);
+  const dimensions = useSize(elementRef);
 
   return (
-    <>
+    < >
       <VStack
         spacing={2}
         align='stretch'
+
       >
         <Navbar></Navbar>
 
 
         <Flex direction={"column"} px={4}>
-          <Center bg='green.500'>
+          {/* <Center bg='green.500'>
             <Text>Box 1</Text>
           </Center>
           <Square bg='blue.500' size='150px'>
@@ -175,7 +177,45 @@ function App() {
           </Square>
           <Box flex='1' bg='tomato'>
             <Text>Box 3</Text>
-          </Box>
+          </Box> */}
+          <SimpleGrid height={"80vh"} columns={2} spacing={5}>
+            {/* <Flex bg='tomato' direction={"column"}>
+              <Heading as={"h3"}>JSON</Heading>
+              <Box flex='1' bg='magenta' ref={elementRef}>
+                {dimensions && (
+                  <AceEditor
+                    height={`${dimensions.height}px`}
+                    width={`${dimensions.width}px`}
+                    // value={jsonObject}
+                    mode="json"
+                    theme="monokai"
+                    // onChange={onChange}
+                    name="json-editor"
+                    editorProps={{ $blockScrolling: true }}
+                  />
+                )}</Box>
+            </Flex> */}
+             <EditorPanel title={"JSON"} mode="json"
+              theme="monokai"
+              name="json-editor"></EditorPanel>
+            <EditorPanel title={"pydantic"} mode="python"
+              theme="monokai"
+              name="python-editor"></EditorPanel>
+            {/* <Flex bg='tomato' direction={"column"}>
+              <Heading as={"h3"}>Pydantic</Heading>
+              <Box flex='1' bg='magenta' ref={elementRef}>
+                {dimensions && (
+                  <AceEditor
+                    height={`${dimensions.height}px`}
+                    width={`${dimensions.width}px`}
+                    // value={pydanticModel}
+                    mode="python"
+                    theme="monokai"
+                    name="python-editor"
+                    editorProps={{ $blockScrolling: true }}
+                  />)}</Box>
+            </Flex> */}
+          </SimpleGrid>
           <About />
         </Flex>
 

@@ -19,7 +19,7 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "dev": "concurrently -c 'bgBlue.bold,bgMagenta.bold,bgGreen.bold' 'npm run dev:*'",
-    "codegen": "openapi --input http://127.0.0.1:8000/openapi.json --output src/lib/jsonToPydantic --name JsonToPydantic --client fetch"
+    "codegen": "openapi --input http://127.0.0.1:8000/openapi.json --output src/lib/jsonToPydantic --client fetch --name JsonToPydantic --exportSchemas true"
   },
   "eslintConfig": {
     "extends": [

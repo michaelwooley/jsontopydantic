@@ -8,7 +8,8 @@ import About from "components/About";
 import * as constants from "lib/constants";
 import TranslateOptionsComponent from "components/TranslateOptions";
 import { ColorModeSwitcher } from "components/ColorModeSwitcher";
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, Center, Flex, SimpleGrid, StackDivider, VStack, Text, Square } from "@chakra-ui/react";
+import Navbar from "components/Navbar";
 
 const apiUrl = "https://ufgjji253b.execute-api.us-east-1.amazonaws.com/prod";
 const defaultJsonObject = '{\n\t"foo": 5, \n\t"barBaz": "hello"\n}';
@@ -157,14 +158,29 @@ function validJson(newValue: string): boolean {
 function App() {
 
   return (
+    <>
+      <VStack
+        spacing={2}
+        align='stretch'
+      >
+        <Navbar></Navbar>
 
-    <SimpleGrid columns={2} spacing={10}>
-      <Box bg='tomato' height='80px'></Box>
-      <Box bg='tomato' height='80px'></Box>
-      <Box bg='tomato' height='80px'></Box>
-      <Box bg='tomato' height='80px'></Box>
-      <Box bg='tomato' height='80px'></Box>
-    </SimpleGrid>
+
+        <Flex direction={"column"} px={4}>
+          <Center bg='green.500'>
+            <Text>Box 1</Text>
+          </Center>
+          <Square bg='blue.500' size='150px'>
+            <Text>Box 2</Text>
+          </Square>
+          <Box flex='1' bg='tomato'>
+            <Text>Box 3</Text>
+          </Box>
+          <About />
+        </Flex>
+
+      </VStack>
+    </>
   );
 }
 export default App;

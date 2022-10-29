@@ -1,34 +1,41 @@
 import React from "react";
-import logo from "images/GitHub-Mark-Light-120px-plus.png";
+import {
+    Stack,
+    Text, Heading, Link
+} from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 export default function About(): JSX.Element {
     return (
         <>
-            <div className="content">
-                <h2>What is this?</h2>
-                <p>
+            <Stack spacing={2}>
+                <Heading as="h2">What is this?</Heading>
+                <Text>
                     JSON to Pydantic is a tool that lets you convert JSON objects into
-                    Pydantic models. <a href="https://www.json.org/json-en.html">JSON</a>{" "}
+                    Pydantic models.  <Link href="https://www.json.org/json-en.html" isExternal>
+                        JSON <ExternalLinkIcon mx='2px' />
+                    </Link>{" "}
                     is the de-facto data interchange format of the internet, and{" "}
-                    <a href="https://pydantic-docs.helpmanual.io/">Pydantic</a> is a
+                    <Link href="https://pydantic-docs.helpmanual.io/" isExternal>
+                        Pydantic <ExternalLinkIcon mx='2px' />
+                    </Link>is a
                     library that makes parsing JSON in Python a breeze.
-                </p>
-                <p>
+                </Text>
+                <Text>
                     To generate a Pydantic model from a JSON object, enter it into the
                     JSON editor and watch a Pydantic model automagically appear in the
                     Pydantic editor.
-                </p>
-                <p>
+                </Text>
+                <Text>
                     Pydantic models are generated via the experimental{" "}
-                    <a href="https://github.com/koxudaxi/datamodel-code-generator">
-                        datamodel-code-generator
-                    </a>
+
+                    <Link href="https://github.com/koxudaxi/datamodel-code-generator" isExternal>
+                        datamodel-code-generator <ExternalLinkIcon mx='2px' />
+                    </Link>
                     .
-                </p>
-            </div>
-            <a href="https://github.com/brokenloop/jsontopydantic">
-                <img id="github-logo" src={logo} alt="GitHub Logo" />
-            </a>
+                </Text>
+            </Stack>
+
         </>
     );
 }

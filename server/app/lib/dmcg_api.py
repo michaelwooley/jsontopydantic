@@ -1,6 +1,4 @@
 from datetime import datetime, timezone
-
-# from enum import Enum
 from pathlib import Path
 from typing import (
     IO,
@@ -19,6 +17,7 @@ from typing import (
     Union,
 )
 from urllib.parse import ParseResult
+from app.lib.models import TranslateRequest
 
 
 if TYPE_CHECKING:
@@ -39,10 +38,13 @@ from datamodel_code_generator import (
     load_yaml,
     RAW_DATA_TYPES,
     Error,
+    enable_debug_message,
+    InvalidClassNameError,
 )
+from datamodel_code_generator.__main__ import Config as MainConfig
 
 
-def generate(
+def generate_inner(
     input_: Union[Path, str, ParseResult],
     *,
     input_filename: Optional[str] = None,
@@ -88,7 +90,7 @@ def generate(
     use_double_quotes: bool = False,
     use_union_operator: bool = False,
 ) -> dict[str, str]:
-    """Will be almost identical to what is seen in `datamodel_code_generator.__init__`.
+    """Will be almost identical to what is seen in `datamodel_code_generator.__init__.generate`.
 
     Make a few tweaks around the edges:
 
@@ -275,4 +277,133 @@ def generate(
     return outputs
 
 
-__all__ = ["DefaultPutDict", "LiteralType", "PythonVersion"]
+def generate(req: TranslateRequest) -> dict[str, str]:
+    """Main function."""
+
+    # TODO Make version info more clear eventually.
+    # if namespace.version:
+    #     from datamodel_code_generator.version import version
+
+    # TODO Figure out what to do with black.
+    # root = black_find_project_root((Path().resolve(),))
+    # pyproject_toml_path = root / "pyproject.toml"
+    # if pyproject_toml_path.is_file():
+    #     pyproject_toml: Dict[str, Any] = {
+    #         k.replace("-", "_"): v
+    #         for k, v in toml.load(str(pyproject_toml_path))
+    #         .get("tool", {})
+    #         .get("datamodel-codegen", {})
+    #         .items()
+    #     }
+    # else:
+    #     pyproject_toml = {}
+
+    # try: (Error handling to be done at top level)
+    config = MainConfig.parse_obj({"input": req.data, **req.options.dict()})
+    # config.merge_args(namespace)
+
+    # if not is_supported_in_black(config.target_python_version):  # pragma: no cover
+    #     print(
+    #         f"Installed black doesn't support Python version {config.target_python_version.value}.\n"  # type: ignore
+    #         f"You have to install a newer black.\n"
+    #         f"Installed black version: {black.__version__}",
+    #         file=sys.stderr,
+    #     )
+    #     return Exit.ERROR
+
+    if config.debug:  # pragma: no cover
+        enable_debug_message()
+
+    extra_template_data: Optional[DefaultDict[str, Dict[str, Any]]]
+    if config.extra_template_data is None:
+        extra_template_data = None
+    else:
+        raise NotImplementedError("Cannnot handle extra template data yet.")
+        # with config.extra_template_data as data:
+        #     try:
+        #         extra_template_data = json.load(
+        #             data, object_hook=lambda d: defaultdict(dict, **d)
+        #         )
+        #     except json.JSONDecodeError as e:
+        #         print(f"Unable to load extra template data: {e}", file=sys.stderr)
+        #         return Exit.ERROR
+
+    if config.aliases is None:
+        aliases = None
+    else:
+        raise NotImplementedError("Not handling config aliases in config yet.")
+        # with config.aliases as data:
+        #     try:
+        #         aliases = json.load(data)
+        #     except json.JSONDecodeError as e:
+        #         print(f"Unable to load alias mapping: {e}", file=sys.stderr)
+        #         return Exit.ERROR
+        # if not isinstance(aliases, dict) or not all(
+        #     isinstance(k, str) and isinstance(v, str) for k, v in aliases.items()
+        # ):
+        #     print(
+        #         'Alias mapping must be a JSON string mapping (e.g. {"from": "to", ...})',
+        #         file=sys.stderr,
+        #     )
+        #     return Exit.ERROR
+
+    input_ = config.input
+    if input_ is None:
+        raise ValueError("Received empty input.")
+
+    # try: # TODO Better error handling - see try/except
+    return generate_inner(
+        input_=input_,
+        input_file_type=config.input_file_type,
+        # output=config.output,
+        target_python_version=config.target_python_version,
+        base_class=config.base_class,
+        custom_template_dir=config.custom_template_dir,
+        validation=config.validation,
+        field_constraints=config.field_constraints,
+        snake_case_field=config.snake_case_field,
+        strip_default_none=config.strip_default_none,
+        extra_template_data=extra_template_data,
+        aliases=aliases,
+        disable_timestamp=config.disable_timestamp,
+        allow_population_by_field_name=config.allow_population_by_field_name,
+        apply_default_values_for_required_fields=config.use_default,
+        force_optional_for_required_fields=config.force_optional,
+        class_name=config.class_name,
+        use_standard_collections=config.use_standard_collections,
+        use_schema_description=config.use_schema_description,
+        reuse_model=config.reuse_model,
+        encoding=config.encoding,
+        enum_field_as_literal=config.enum_field_as_literal,
+        set_default_enum_member=config.set_default_enum_member,
+        use_subclass_enum=config.use_subclass_enum,
+        strict_nullable=config.strict_nullable,
+        use_generic_container_types=config.use_generic_container_types,
+        enable_faux_immutability=config.enable_faux_immutability,
+        disable_appending_item_suffix=config.disable_appending_item_suffix,
+        strict_types=config.strict_types,
+        empty_enum_field_name=config.empty_enum_field_name,
+        field_extra_keys=config.field_extra_keys,
+        field_include_all_keys=config.field_include_all_keys,
+        openapi_scopes=config.openapi_scopes,
+        wrap_string_literal=config.wrap_string_literal,
+        use_title_as_name=config.use_title_as_name,
+        http_headers=config.http_headers,
+        http_ignore_tls=config.http_ignore_tls,
+        use_annotated=config.use_annotated,
+        use_non_positive_negative_number_constrained_types=config.use_non_positive_negative_number_constrained_types,
+        original_field_name_delimiter=config.original_field_name_delimiter,
+        use_double_quotes=config.use_double_quotes,
+        use_union_operator=config.use_union_operator,
+    )
+    # except InvalidClassNameError as e:
+    #     print(f"{e} You have to set `--class-name` option", file=sys.stderr)
+    #     return Exit.ERROR
+    # except Error as e:
+    #     print(str(e), file=sys.stderr)
+    #     return Exit.ERROR
+    # except Exception:
+    #     import traceback
+
+    #     print(traceback.format_exc(), file=sys.stderr)
+    #     return Exit.ERROR

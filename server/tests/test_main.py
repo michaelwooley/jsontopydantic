@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.main import app, BasicRequest, TranslateOptions
+from app.main import app, TranslateRequest, TranslateOptions
 
 client = TestClient(app)
 

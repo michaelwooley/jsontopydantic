@@ -1,15 +1,16 @@
+from app.lib.models import TranslateRequest, TranslateResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Json, Field
 from mangum import Mangum
 from typing import Optional
 
-from app.lib.generator import translate
+from app.lib.dmcg_api import generate as generate_pydantic_schema
 
 
 app = FastAPI(title="JsonToPydantic")
 app.openapi()
-origins = ["*"]
+origins = ["*"]  # TODO SET THIS!!!
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,41 +21,12 @@ app.add_middleware(
 )
 
 
-class TranslateOptions(BaseModel):
-    force_optional: bool = Field(
-        default=False,
-        alias="forceOptional",
-        description="Force everything to be optional.",
-        title="Force optiasfonal",
-        detail=True,
-    )
-    snake_cased: bool = Field(default=False, alias="snakeCased")
-
-
-class BasicRequest(BaseModel):
-    data: Json
-    options: Optional[TranslateOptions]
-
-
-class TranslateResponse(BaseModel):
-    model: str
-
-
-@app.post("/", name="translate", response_model=TranslateResponse, tags=["translate"])
-async def convert(basic_request: BasicRequest) -> TranslateResponse:
-    print(basic_request)
-    options = (
-        basic_request.options
-        if basic_request.options is not None
-        else TranslateOptions()
-    )
-    return TranslateResponse(
-        model=translate(
-            basic_request.data,
-            options.force_optional,
-            options.snake_cased,
-        )
-    )
+@app.post("/", name="translate", response_model=TranslateResponse, tags=["codegen"])
+async def post_generate_pydantic_schema(
+    basic_request: TranslateRequest,
+) -> TranslateResponse:
+    out = generate_pydantic_schema(req=basic_request)
+    return TranslateResponse(py=out)
 
 
 handler = Mangum(app)
